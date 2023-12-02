@@ -11,6 +11,8 @@ public class EmployeeDao {
 	 * This class handles all the database operations related to the employee table
 	 */
 	
+	/* Test */
+	
 	public String addEmployee(Employee employee) {
 
 		/*
