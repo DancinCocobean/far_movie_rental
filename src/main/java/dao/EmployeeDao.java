@@ -18,7 +18,6 @@ public class EmployeeDao {
 	/* Test */
 	
 	public String addEmployee(Employee employee) {
-
 		/*
 		 * All the values of the add employee form are encapsulated in the employee object.
 		 * These can be accessed by getter methods (see Employee class in model package).
@@ -91,12 +90,13 @@ public class EmployeeDao {
 			boolean employeeExists = rs.getInt("count") > 0;
 			if (!employeeExists) {
 				query = "INSERT INTO employee "
-						+ "(SSN, StartDate, HourlyRate, Email)"
+						+ "(SSN, StartDate, HourlyRate, Email, Level)"
 						+ "VALUES ('" 
 						+ employee.getEmployeeID() + "', '"
 						+ employee.getStartDate() + "', "
 						+ employee.getHourlyRate() + ", '"
-						+ employee.getEmail() + "');";
+						+ employee.getEmail() + "', "
+						+ "'CR');";
 				
 				rowsAffected = st.executeUpdate(query);
 				if (rowsAffected == 0) {
@@ -255,10 +255,8 @@ public class EmployeeDao {
 		
 		return "success";
 	}
-
 	
 	public List<Employee> getEmployees() {
-
 		/*
 		 * The students code to fetch data from the database will be written here
 		 * Query to return details about all the employees must be implemented
@@ -308,7 +306,6 @@ public class EmployeeDao {
 	}
 
 	public Employee getEmployee(String employeeID) {
-
 		/*
 		 * The students code to fetch data from the database based on "employeeID" will be written here
 		 * employeeID, which is the Employee's ID who's details have to be fetched, is given as method parameter
@@ -367,7 +364,7 @@ public class EmployeeDao {
 		employee.setEmail("shiyong@cs.sunysb.edu");
 		employee.setFirstName("Shiyong");
 		employee.setLastName("Lu");
-		employee.setEmployeeID("631-413-5555");
+		employee.setEmployeeID("631-413-5554");
 		/*Sample data ends*/
 		
 		return employee;
