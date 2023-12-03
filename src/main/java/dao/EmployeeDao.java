@@ -2,6 +2,10 @@ package dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.sql.ResultSet;
 
 import model.Customer;
 import model.Employee;
@@ -67,23 +71,47 @@ public class EmployeeDao {
 		 */
 
 		List<Employee> employees = new ArrayList<Employee>();
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", "password");
+			st = con.createStatement();
+			
+			String query = "SELECT * FROM employee";
+			rs = st.executeQuery(query);
+			
+			while (rs.next()) {
+				Employee employee = new Employee();
+				
+				employee.setStartDate(rs.getString("StartDate"));
+				employee.setHourlyRate(rs.getInt("HourlyRate"));
+				
+				employees.add(employee);
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
 		
 		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Employee employee = new Employee();
-			employee.setEmail("shiyong@cs.sunysb.edu");
-			employee.setFirstName("Shiyong");
-			employee.setLastName("Lu");
-			employee.setAddress("123 Success Street");
-			employee.setCity("Stony Brook");
-			employee.setStartDate("2006-10-17");
-			employee.setState("NY");
-			employee.setZipCode(11790);
-			employee.setTelephone("5166328959");
-			employee.setEmployeeID("631-413-5555");
-			employee.setHourlyRate(100);
-			employees.add(employee);
-		}
+//		for (int i = 0; i < 10; i++) {
+//			Employee employee = new Employee();
+//			employee.setEmail("shiyong@cs.sunysb.edu");
+//			employee.setFirstName("Shiyong");
+//			employee.setLastName("Lu");
+//			employee.setAddress("123 Success Street");
+//			employee.setCity("Stony Brook");
+//			employee.setStartDate("2006-10-17");
+//			employee.setState("NY");
+//			employee.setZipCode(11790);
+//			employee.setTelephone("5166328959");
+//			employee.setEmployeeID("631-413-5555");
+//			employee.setHourlyRate(100);
+//			employees.add(employee);
+//		}
 		/*Sample data ends*/
 		
 		return employees;
