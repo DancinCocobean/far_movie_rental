@@ -27,10 +27,29 @@ public class EmployeeDao {
 		 * You need to handle the database insertion of the employee details and return "success" or "failure" based on result of the database insertion.
 		 */
 		
-		/*Sample data begins*/
+//		Connection con = null;
+//		Statement st = null;
+//		ResultSet rs = null;
+//		String query = "";
+//		String password = "";
+//		
+//		try {
+//			Class.forName("com.mysql.cj.jdbc.Driver");
+//			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+//			st = con.createStatement();
+//			
+//			query = "SELECT COUNT(*) AS count FROM location L WHERE L.zipcode = " + employee.getZipCode();
+//			rs = st.executeQuery(query);
+//			while (rs.next()) {
+//				int rowCount = rs.getInt("count");
+//				
+//			}
+//		}
+//		catch (Exception e) {
+//			System.out.println(e);
+//		}
+		
 		return "success";
-		/*Sample data ends*/
-
 	}
 
 	public String editEmployee(Employee employee) {
@@ -74,18 +93,31 @@ public class EmployeeDao {
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
+		String query = "";
+		String password = "";
 		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", "password");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
 			st = con.createStatement();
 			
-			String query = "SELECT * FROM employee";
+			query = "SELECT * FROM employee E"
+					+ " JOIN person P ON E.ssn = P.ssn"
+					+ " JOIN location L ON L.zipcode = P.zipcode";
 			rs = st.executeQuery(query);
 			
 			while (rs.next()) {
 				Employee employee = new Employee();
 				
+				employee.setEmployeeID(rs.getString("Id"));
+				employee.setFirstName(rs.getString("FirstName"));
+				employee.setLastName(rs.getString("LastName"));
+				employee.setAddress(rs.getString("Address"));
+				employee.setCity(rs.getString("City"));
+				employee.setState(rs.getString("State"));
+				employee.setZipCode(rs.getInt("ZipCode"));
+				employee.setTelephone(rs.getString("Telephone"));
+//				employee.setEmail(rs.getString("Email"));
 				employee.setStartDate(rs.getString("StartDate"));
 				employee.setHourlyRate(rs.getInt("HourlyRate"));
 				
@@ -95,24 +127,6 @@ public class EmployeeDao {
 		catch (Exception e) {
 			System.out.println(e);
 		}
-		
-		/*Sample data begins*/
-//		for (int i = 0; i < 10; i++) {
-//			Employee employee = new Employee();
-//			employee.setEmail("shiyong@cs.sunysb.edu");
-//			employee.setFirstName("Shiyong");
-//			employee.setLastName("Lu");
-//			employee.setAddress("123 Success Street");
-//			employee.setCity("Stony Brook");
-//			employee.setStartDate("2006-10-17");
-//			employee.setState("NY");
-//			employee.setZipCode(11790);
-//			employee.setTelephone("5166328959");
-//			employee.setEmployeeID("631-413-5555");
-//			employee.setHourlyRate(100);
-//			employees.add(employee);
-//		}
-		/*Sample data ends*/
 		
 		return employees;
 	}
