@@ -27,27 +27,89 @@ public class EmployeeDao {
 		 * You need to handle the database insertion of the employee details and return "success" or "failure" based on result of the database insertion.
 		 */
 		
-//		Connection con = null;
-//		Statement st = null;
-//		ResultSet rs = null;
-//		String query = "";
-//		String password = "";
-//		
-//		try {
-//			Class.forName("com.mysql.cj.jdbc.Driver");
-//			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
-//			st = con.createStatement();
-//			
-//			query = "SELECT COUNT(*) AS count FROM location L WHERE L.zipcode = " + employee.getZipCode();
-//			rs = st.executeQuery(query);
-//			while (rs.next()) {
-//				int rowCount = rs.getInt("count");
-//				
-//			}
-//		}
-//		catch (Exception e) {
-//			System.out.println(e);
-//		}
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		int rowsAffected = 0;
+		String query = "";
+		String password = "root";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT COUNT(*) AS count FROM location L WHERE L.zipcode = "
+						+ employee.getZipCode();
+			
+			rs = st.executeQuery(query);
+			rs.next();
+			
+			boolean locationExists = rs.getInt("count") > 0;
+			if (!locationExists) {
+				query = "INSERT INTO location (ZipCode, City, State) VALUES ("
+						+ employee.getZipCode() + ", '"
+						+ employee.getCity() + "', '"
+						+ employee.getState() + "');";
+				
+				rowsAffected = st.executeUpdate(query);
+				if (rowsAffected == 0) {
+					return "failure";
+				}
+			}
+			
+			query = "SELECT COUNT(*) AS count FROM person P WHERE P.SSN = "
+					+ employee.getEmployeeID();
+			
+			rs = st.executeQuery(query);
+			rs.next();
+			
+			boolean personExists = rs.getInt("count") > 0;
+			if (!personExists) {
+				query = "INSERT INTO person "
+						+ "(SSN, LastName, FirstName, Address, ZipCode, Telephone)"
+						+ "VALUES ('" 
+						+ employee.getEmployeeID() + "', '"
+						+ employee.getLastName() + "', '"
+						+ employee.getFirstName() + "', '"
+						+ employee.getAddress() + "', "
+						+ employee.getZipCode() + ", '"
+						+ employee.getTelephone() + "');";
+				
+				rowsAffected = st.executeUpdate(query);
+				if (rowsAffected == 0) {
+					return "failure";
+				}
+			}
+			
+			query = "SELECT COUNT(*) AS count FROM employee E WHERE E.SSN = "
+					+ employee.getEmployeeID();
+			
+			rs = st.executeQuery(query);
+			rs.next();
+			
+			boolean employeeExists = rs.getInt("count") > 0;
+			if (!employeeExists) {
+				query = "INSERT INTO employee "
+						+ "(SSN, StartDate, HourlyRate, Email)"
+						+ "VALUES ('" 
+						+ employee.getEmployeeID() + "', '"
+						+ employee.getStartDate() + "', "
+						+ employee.getHourlyRate() + ", '"
+						+ employee.getEmail() + "');";
+				
+				rowsAffected = st.executeUpdate(query);
+				if (rowsAffected == 0) {
+					return "failure";
+				}
+			}
+			else {
+				return "failure";
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
 		
 		return "success";
 	}
@@ -61,9 +123,102 @@ public class EmployeeDao {
 		 * You need to handle the database update and return "success" or "failure" based on result of the database update.
 		 */
 		
-		/*Sample data begins*/
+//		Connection con = null;
+//		Statement st = null;
+//		ResultSet rs = null;
+//		int rowsAffected = 0;
+//		String query = "";
+//		String password = "root";
+//		
+//		try {
+//			Class.forName("com.mysql.cj.jdbc.Driver");
+//			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+//			st = con.createStatement();
+//			
+//			query = "SELECT COUNT(*) AS count FROM location L WHERE L.zipcode = "
+//						+ employee.getZipCode();
+//			
+//			rs = st.executeQuery(query);
+//			rs.next();
+//			
+//			boolean locationExists = rs.getInt("count") > 0;
+//			if (!locationExists) {
+//				query = "INSERT INTO location (ZipCode, City, State) VALUES ("
+//						+ employee.getZipCode() + ", '"
+//						+ employee.getCity() + "', '"
+//						+ employee.getState() + "');";
+//				
+//				rowsAffected = st.executeUpdate(query);
+//				if (rowsAffected == 0) {
+//					return "failure";
+//				}
+//			}
+//			else {
+//				query = "UPDATE location SET "
+//						+ "City = '" + employee.getCity() + "', "
+//						+ "State = '" + employee.getState()
+//						+ "' WHERE ZipCode = " + employee.getZipCode();
+//				
+//				rowsAffected = st.executeUpdate(query);
+//				if (rowsAffected == 0) {
+//					return "failure";
+//				}
+//			}
+//			
+//			query = "SELECT COUNT(*) AS count FROM person P WHERE P.SSN = "
+//					+ employee.getEmployeeID();
+//			
+//			rs = st.executeQuery(query);
+//			rs.next();
+//			
+//			boolean personExists = rs.getInt("count") > 0;
+//			if (!personExists) {
+//				query = "INSERT INTO person "
+//						+ "(SSN, LastName, FirstName, Address, ZipCode, Telephone)"
+//						+ "VALUES ('" 
+//						+ employee.getEmployeeID() + "', '"
+//						+ employee.getLastName() + "', '"
+//						+ employee.getFirstName() + "', '"
+//						+ employee.getAddress() + "', "
+//						+ employee.getZipCode() + ", '"
+//						+ employee.getTelephone() + "');";
+//				
+//				rowsAffected = st.executeUpdate(query);
+//				if (rowsAffected == 0) {
+//					return "failure";
+//				}
+//			}
+//			
+//			query = "SELECT COUNT(*) AS count FROM employee E WHERE E.SSN = "
+//					+ employee.getEmployeeID();
+//			
+//			rs = st.executeQuery(query);
+//			rs.next();
+//			
+//			boolean employeeExists = rs.getInt("count") > 0;
+//			if (!employeeExists) {
+//				query = "INSERT INTO employee "
+//						+ "(SSN, StartDate, HourlyRate, Email)"
+//						+ "VALUES ('" 
+//						+ employee.getEmployeeID() + "', '"
+//						+ employee.getStartDate() + "', "
+//						+ employee.getHourlyRate() + ", '"
+//						+ employee.getEmail() + "');";
+//				
+//				rowsAffected = st.executeUpdate(query);
+//				if (rowsAffected == 0) {
+//					return "failure";
+//				}
+//			}
+//			else {
+//				return "failure";
+//			}
+//		}
+//		catch (Exception e) {
+//			System.out.println(e);
+//		}
+		
 		return "success";
-		/*Sample data ends*/
 
 	}
 
@@ -74,10 +229,30 @@ public class EmployeeDao {
 		 * You need to handle the database deletion and return "success" or "failure" based on result of the database deletion.
 		 */
 		
-		/*Sample data begins*/
+		Connection con = null;
+		Statement st = null;
+		int rowsAffected = 0;
+		String query = "";
+		String password = "root";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "DELETE FROM employee WHERE SSN = '"
+						+ employeeID + "'";
+			
+			rowsAffected = st.executeUpdate(query);
+			if (rowsAffected == 0) {
+				return "failure";
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
+		
 		return "success";
-		/*Sample data ends*/
-
 	}
 
 	
@@ -94,7 +269,7 @@ public class EmployeeDao {
 		Statement st = null;
 		ResultSet rs = null;
 		String query = "";
-		String password = "";
+		String password = "root";
 		
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -109,7 +284,7 @@ public class EmployeeDao {
 			while (rs.next()) {
 				Employee employee = new Employee();
 				
-				employee.setEmployeeID(rs.getString("Id"));
+				employee.setEmployeeID(rs.getString("SSN"));
 				employee.setFirstName(rs.getString("FirstName"));
 				employee.setLastName(rs.getString("LastName"));
 				employee.setAddress(rs.getString("Address"));
@@ -117,9 +292,9 @@ public class EmployeeDao {
 				employee.setState(rs.getString("State"));
 				employee.setZipCode(rs.getInt("ZipCode"));
 				employee.setTelephone(rs.getString("Telephone"));
-//				employee.setEmail(rs.getString("Email"));
+				employee.setEmail(rs.getString("Email"));
 				employee.setStartDate(rs.getString("StartDate"));
-				employee.setHourlyRate(rs.getInt("HourlyRate"));
+				employee.setHourlyRate(rs.getFloat("HourlyRate"));
 				
 				employees.add(employee);
 			}
