@@ -40,7 +40,7 @@ public class EmployeeDao {
 			st = con.createStatement();
 			
 			query = "SELECT COUNT(*) AS count FROM location L WHERE L.zipcode = "
-						+ employee.getZipCode();
+						+ employee.getZipCode() + ";";
 			
 			rs = st.executeQuery(query);
 			rs.next();
@@ -59,7 +59,7 @@ public class EmployeeDao {
 			}
 			
 			query = "SELECT COUNT(*) AS count FROM person P WHERE P.SSN = "
-					+ employee.getEmployeeID();
+					+ employee.getEmployeeID() + ";";
 			
 			rs = st.executeQuery(query);
 			rs.next();
@@ -83,7 +83,7 @@ public class EmployeeDao {
 			}
 			
 			query = "SELECT COUNT(*) AS count FROM employee E WHERE E.SSN = "
-					+ employee.getEmployeeID();
+					+ employee.getEmployeeID() + ";";
 			
 			rs = st.executeQuery(query);
 			rs.next();
@@ -109,6 +109,7 @@ public class EmployeeDao {
 		}
 		catch (Exception e) {
 			System.out.println(e);
+			return "failure";
 		}
 		
 		return "success";
@@ -241,7 +242,7 @@ public class EmployeeDao {
 			st = con.createStatement();
 			
 			query = "DELETE FROM employee WHERE SSN = '"
-						+ employeeID + "'";
+						+ employeeID + "';";
 			
 			rowsAffected = st.executeUpdate(query);
 			if (rowsAffected == 0) {
@@ -250,6 +251,7 @@ public class EmployeeDao {
 		}
 		catch (Exception e) {
 			System.out.println(e);
+			return "failure";
 		}
 		
 		return "success";
@@ -277,8 +279,8 @@ public class EmployeeDao {
 			st = con.createStatement();
 			
 			query = "SELECT * FROM employee E"
-					+ " JOIN person P ON E.ssn = P.ssn"
-					+ " JOIN location L ON L.zipcode = P.zipcode";
+					+ " JOIN person P ON E.SSN = P.SSN"
+					+ " JOIN location L ON L.ZipCode = P.ZipCode;";
 			rs = st.executeQuery(query);
 			
 			while (rs.next()) {
@@ -313,22 +315,42 @@ public class EmployeeDao {
 		 * employeeID, which is the Employee's ID who's details have to be fetched, is given as method parameter
 		 * The record is required to be encapsulated as a "Employee" class object
 		 */
-
-		Employee employee = new Employee();
 		
-		/*Sample data begins*/
-		employee.setEmail("shiyong@cs.sunysb.edu");
-		employee.setFirstName("Shiyong");
-		employee.setLastName("Lu");
-		employee.setAddress("123 Success Street");
-		employee.setCity("Stony Brook");
-		employee.setStartDate("2006-10-17");
-		employee.setState("NY");
-		employee.setZipCode(11790);
-		employee.setTelephone("5166328959");
-		employee.setEmployeeID("631-413-5555");
-		employee.setHourlyRate(100);
-		/*Sample data ends*/
+		Employee employee = new Employee();
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT * FROM employee E"
+					+ " JOIN person P ON E.SSN = P.SSN"
+					+ " JOIN location L ON L.ZipCode = P.ZipCode"
+					+ " WHERE E.SSN = '" + employeeID + "';";
+			
+			rs = st.executeQuery(query);
+			if (rs.next()) {
+				employee.setEmployeeID(rs.getString("SSN"));
+				employee.setFirstName(rs.getString("FirstName"));
+				employee.setLastName(rs.getString("LastName"));
+				employee.setAddress(rs.getString("Address"));
+				employee.setCity(rs.getString("City"));
+				employee.setState(rs.getString("State"));
+				employee.setZipCode(rs.getInt("ZipCode"));
+				employee.setTelephone(rs.getString("Telephone"));
+				employee.setEmail(rs.getString("Email"));
+				employee.setStartDate(rs.getString("StartDate"));
+				employee.setHourlyRate(rs.getFloat("HourlyRate"));
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
 		
 		return employee;
 	}
