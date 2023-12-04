@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Order;
 import model.Movie;
 
 public class MovieDao {
@@ -519,7 +520,6 @@ public List<Movie> getQueueOfMovies(String customerID){
 	}
 	
 	public List getMoviesByActor(String actorName) {
-		
 		/*
 		 * The students code to fetch data from the database will be written here
 		 * The movieName, which is the movie's name on which the query has to be implemented, is given as method parameter
@@ -532,18 +532,35 @@ public List<Movie> getQueueOfMovies(String customerID){
 
 		List<Movie> movies = new ArrayList<Movie>();
 		
-		/*Sample data begins*/
-		for (int i = 0; i < 4; i++) {
-			Movie movie = new Movie();
-			movie.setMovieID(1);
-			movie.setMovieName("The Godfather");
-			movie.setMovieType("Drama");
-			movies.add(movie);
-			
-		}
-		/*Sample data ends*/
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
 		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT M.Id, M.Name, M.Type FROM movie M JOIN appearedin AI ON"
+					+ " M.Id = AI.MovieId JOIN actor A ON AI.ActorId = A.Id WHERE A.Name"
+					+ " LIKE '%" + actorName + "%';";
+			
+			rs = st.executeQuery(query);
+			while (rs.next()) {
+				Movie movie = new Movie();
+				
+				movie.setMovieID(rs.getInt("Id"));
+				movie.setMovieName(rs.getString("Name"));
+				movie.setMovieType(rs.getString("Type"));
 
+				movies.add(movie);
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
 		
 		return movies;
 	}

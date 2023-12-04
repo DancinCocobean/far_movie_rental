@@ -43,7 +43,7 @@ public class SearchMoviesByTypeController extends HttpServlet {
 		String movieType = request.getParameter("movieType");
 		
 		MovieDao movieDao = new MovieDao();
-		List<Movie> movies = movieDao.getMovieRentalsByType(movieType);
+		List<Movie> movies = movieDao.getMoviesByType(movieType);
 		
 		request.setAttribute("movies", movies);
 		

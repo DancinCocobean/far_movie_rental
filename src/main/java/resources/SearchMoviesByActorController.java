@@ -42,7 +42,7 @@ public class SearchMoviesByActorController extends HttpServlet {
 		String actorName = request.getParameter("actorName");
 		
 		MovieDao movieDao = new MovieDao();
-		List<Movie> movies = movieDao.getMoviesByName(actorName);
+		List<Movie> movies = movieDao.getMoviesByActor(actorName);
 		
 		request.setAttribute("movies", movies);
 		
