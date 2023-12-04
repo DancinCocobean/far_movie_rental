@@ -40,10 +40,10 @@ public class SearchMovieRentalsByTypeController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-String movieType = request.getParameter("movieType");
+		String movieType = request.getParameter("movieType");
 		
 		MovieDao movieDao = new MovieDao();
-		List<Movie> movies = movieDao.getMoviesByType(movieType);
+		List<Movie> movies = movieDao.getMovieRentalsByType(movieType);
 		
 		request.setAttribute("movies", movies);
 		

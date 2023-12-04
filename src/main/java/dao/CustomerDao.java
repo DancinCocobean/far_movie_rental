@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Customer;
+import model.Movie;
 import model.Customer;
 
 import java.util.stream.IntStream;
@@ -59,17 +60,45 @@ public class CustomerDao {
 		 * The customer record is required to be encapsulated as a "Customer" class object
 		 */
 
-
-		/*Sample data begins*/
 		Customer customer = new Customer();
-		customer.setCustomerID("111-11-1111");
-		customer.setLastName("Lu");
-		customer.setFirstName("Shiyong");
-		customer.setEmail("shiyong@cs.sunysb.edu");
-		/*Sample data ends*/
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT C.Id, P.FirstName, P.LastName, C.Email, SUM("
+					+ " CASE"
+					+ " WHEN A.type = 'limited' THEN 10"
+					+ " WHEN A.type = 'unlimited-1' THEN 15"
+					+ " WHEN A.type = 'unlimited-2' THEN 20"
+					+ " WHEN A.type = 'unlimited-3' THEN 25 END)"
+					+ " AS Revenue FROM"
+					+ " customer C JOIN account A ON C.Id = A.Customer"
+					+ " JOIN person P ON C.Id = P.SSN"
+					+ " GROUP BY C.Id, P.FirstName, P.LastName, C.Email"
+					+ " ORDER BY Revenue DESC"
+					+ " LIMIT 1;";
+			
+			rs = st.executeQuery(query);
+			
+			while (rs.next()) {
+				customer.setCustomerID(rs.getString("Id"));
+				customer.setFirstName(rs.getString("FirstName"));
+				customer.setLastName(rs.getString("LastName"));
+				customer.setEmail(rs.getString("Email"));
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
 	
 		return customer;
-		
 	}
 
 	public List<Customer> getCustomerMailingList() {
