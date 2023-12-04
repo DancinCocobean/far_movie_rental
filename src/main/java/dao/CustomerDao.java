@@ -25,29 +25,45 @@ public class CustomerDao {
 		 */
 		
 		List<Customer> customers = new ArrayList<Customer>();
-
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
 		/*
 		 * The students code to fetch data from the database will be written here
 		 * Each record is required to be encapsulated as a "Customer" class object and added to the "customers" List
 		 */
 		
-		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Customer customer = new Customer();
-			customer.setCustomerID("444444444");
-			customer.setAddress("123 Success Street");
-			customer.setLastName("Lu");
-			customer.setFirstName("Shiyong");
-			customer.setCity("Stony Brook");
-			customer.setState("NY");
-			customer.setEmail("shiyong@cs.sunysb.edu");
-			customer.setZipCode(11790);
-			customer.setTelephone("5166328959");
-			customer.setCreditCard("1234567812345678");
-			customer.setRating(1);
-			customers.add(customer);			
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT * FROM cse305.customer join cse305.person ON customer.Id = person.SSN JOIN cse305.location ON person.ZipCode = location.ZipCode;";
+			rs = st.executeQuery(query);
+			
+			while (rs.next()) {
+				Customer customer = new Customer();
+				
+				customer.setCustomerID(rs.getString("Id"));
+				customer.setEmail(rs.getString("Email"));
+				customer.setRating(rs.getInt("Rating"));
+				customer.setCreditCard(rs.getString("CREDITCARDNUMBER"));
+				customer.setFirstName(rs.getString("FirstName"));
+				customer.setLastName(rs.getString("LastName"));
+				customer.setAddress(rs.getString("Address"));
+				customer.setCity(rs.getString("City"));
+				customer.setState(rs.getString("State"));
+				customer.setZipCode(rs.getInt("ZipCode"));
+				customer.setTelephone(rs.getString("Telephone"));
+				customers.add(customer);
+			}
 		}
-		/*Sample data ends*/
+		catch (Exception e) {
+			System.out.println(e);
+		}
 		
 		return customers;
 	}
@@ -111,22 +127,37 @@ public class CustomerDao {
 
 		
 		List<Customer> customers = new ArrayList<Customer>();
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
 		
-		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Customer customer = new Customer();
-			customer.setCustomerID("111-11-1111");
-			customer.setAddress("123 Success Street");
-			customer.setLastName("Lu");
-			customer.setFirstName("Shiyong");
-			customer.setCity("Stony Brook");
-			customer.setState("NY");
-			customer.setEmail("shiyong@cs.sunysb.edu");
-			customer.setZipCode(11790);
-			customers.add(customer);			
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT * FROM cse305.customer join cse305.person ON customer.Id = person.SSN JOIN cse305.location ON person.ZipCode = location.ZipCode;";
+	
+			rs = st.executeQuery(query);
+			while (rs.next()) {
+                Customer customer = new Customer();
+				customer.setCustomerID(rs.getString("Id"));
+				customer.setFirstName(rs.getString("FirstName"));
+				customer.setLastName(rs.getString("LastName"));
+				customer.setAddress(rs.getString("Address"));
+				customer.setCity(rs.getString("City"));
+				customer.setState(rs.getString("State"));
+				customer.setZipCode(rs.getInt("ZipCode"));
+				customer.setEmail(rs.getString("Email"));
+
+                customers.add(customer);
+			}
+          }
+			catch (Exception e) {
+			System.out.println(e);
 		}
-		/*Sample data ends*/
-		
 		return customers;
 	}
 
@@ -139,20 +170,42 @@ public class CustomerDao {
 		 * The customer record is required to be encapsulated as a "Customer" class object
 		 */
 		
-		/*Sample data begins*/
 		Customer customer = new Customer();
-		customer.setCustomerID("444444444");
-		customer.setAddress("123 Success Street");
-		customer.setLastName("Lu");
-		customer.setFirstName("Shiyong");
-		customer.setCity("Stony Brook");
-		customer.setState("NY");
-		customer.setEmail("shiyong@cs.sunysb.edu");
-		customer.setZipCode(11790);
-		customer.setTelephone("5166328959");
-		customer.setCreditCard("1234567812345678");
-		customer.setRating(1);
-		/*Sample data ends*/
+
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT * FROM customer C"
+					+ " JOIN person P ON C.Id = P.SSN"
+					+ " JOIN location L ON L.ZipCode = P.ZipCode"
+					+ " WHERE C.Id = '" + customerID + "';";
+			
+			rs = st.executeQuery(query);
+			if (rs.next()) {
+				customer.setCustomerID(rs.getString("Id"));
+				customer.setEmail(rs.getString("Email"));
+				customer.setRating(rs.getInt("Rating"));
+				customer.setCreditCard(rs.getString("CREDITCARDNUMBER"));
+				customer.setFirstName(rs.getString("FirstName"));
+				customer.setLastName(rs.getString("LastName"));
+				customer.setAddress(rs.getString("Address"));
+				customer.setCity(rs.getString("City"));
+				customer.setState(rs.getString("State"));
+				customer.setZipCode(rs.getInt("ZipCode"));
+				customer.setTelephone(rs.getString("Telephone"));
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
 		
 		return customer;
 	}
@@ -165,9 +218,31 @@ public class CustomerDao {
 		 * customerID, which is the Customer's ID who's details have to be deleted, is given as method parameter
 		 */
 
-		/*Sample data begins*/
+		Connection con = null;
+		Statement st = null;
+		int rowsAffected = 0;
+		String query = "";
+		String password = "root";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "DELETE FROM customer WHERE Id = '"
+						+ customerID + "';";
+			
+			rowsAffected = st.executeUpdate(query);
+			if (rowsAffected == 0) {
+				return "failure";
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+			return "failure";
+		}
+		
 		return "success";
-		/*Sample data ends*/
 		
 	}
 
@@ -179,9 +254,32 @@ public class CustomerDao {
 		 * username, which is the email address of the customer, who's ID has to be returned, is given as method parameter
 		 * The Customer's ID is required to be returned as a String
 		 */
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		int rowsAffected = 0;
+		String query = "";
+		String password = "root";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT Id FROM customer WHERE Email = '" + username + "'";
+			
+			rs = st.executeQuery(query);
+            if (rs.next()) {
+                return rs.getString("customerID");
+            }
+		}
+            catch (Exception e) {
+    			System.out.println(e);
+    			return "failure";
+    		}
 
-		return "444444444";
-	}
+        return "success";
+    }
 
 
 	public List<Customer> getSellers() {
@@ -215,19 +313,93 @@ public class CustomerDao {
 
 
 	public String addCustomer(Customer customer) {
-
-		/*
-		 * All the values of the add customer form are encapsulated in the customer object.
-		 * These can be accessed by getter methods (see Customer class in model package).
-		 * e.g. firstName can be accessed by customer.getFirstName() method.
-		 * The sample code returns "success" by default.
-		 * You need to handle the database insertion of the customer details and return "success" or "failure" based on result of the database insertion.
-		 */
+        // Replace this query with the actual query to insert a new customer into the database
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		int rowsAffected = 0;
+		String query = "";
+		String password = "root";
 		
-		/*Sample data begins*/
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT COUNT(*) AS count FROM location L WHERE L.zipcode = "
+						+ customer.getZipCode() + ";";
+			
+			rs = st.executeQuery(query);
+			rs.next();
+			
+			boolean locationExists = rs.getInt("count") > 0;
+			if (!locationExists) {
+				query = "INSERT INTO location (ZipCode, City, State) VALUES ("
+						+ customer.getZipCode() + ", '"
+						+ customer.getCity() + "', '"
+						+ customer.getState() + "');";
+				
+				rowsAffected = st.executeUpdate(query);
+				if (rowsAffected == 0) {
+					return "failure";
+				}
+			}
+			
+			query = "SELECT COUNT(*) AS count FROM person P WHERE P.SSN = '"
+					+ customer.getCustomerID() + "';";
+			
+			rs = st.executeQuery(query);
+			rs.next();
+			
+			boolean personExists = rs.getInt("count") > 0;
+			if (!personExists) {
+				query = "INSERT INTO person "
+						+ "(SSN, LastName, FirstName, Address, ZipCode, Telephone)"
+						+ " VALUES ('" 
+						+ customer.getCustomerID() + "', '"
+						+ customer.getLastName() + "', '"
+						+ customer.getFirstName() + "', '"
+						+ customer.getAddress() + "', "
+						+ customer.getZipCode() + ", '"
+						+ customer.getTelephone() + "');";
+				
+				rowsAffected = st.executeUpdate(query);
+				if (rowsAffected == 0) {
+					return "failure";
+				}
+			}
+			
+			query = "SELECT COUNT(*) AS count FROM Customer C WHERE C.ID = '"
+					+ customer.getCustomerID() + "';";
+			
+			rs = st.executeQuery(query);
+			rs.next();
+			
+			boolean customerExists = rs.getInt("count") > 0;
+			if (!customerExists) {
+				query = "INSERT INTO customer "
+						+ "(Id, Email, Rating, CreditCardNumber)"
+						+ " VALUES ('" 
+						+ customer.getCustomerID() + "', '"
+						+ customer.getEmail() + "', "
+						+ customer.getRating() + ", '"
+						+ customer.getCreditCard() + "');";
+				
+				rowsAffected = st.executeUpdate(query);
+				if (rowsAffected == 0) {
+					return "failure";
+				}
+			}
+			else {
+				return "failure";
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+			return "failure";
+		}
+		
 		return "success";
-		/*Sample data ends*/
-
 	}
 
 	public String editCustomer(Customer customer) {
@@ -239,10 +411,102 @@ public class CustomerDao {
 		 * You need to handle the database update and return "success" or "failure" based on result of the database update.
 		 */
 		
-		/*Sample data begins*/
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		int rowsAffected = 0;
+		String query = "";
+		String password = "root";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT COUNT(*) AS count FROM location L WHERE L.zipcode = "
+						+ customer.getZipCode() + ";";
+			
+			rs = st.executeQuery(query);
+			rs.next();
+			
+			boolean locationExists = rs.getInt("count") > 0;
+			if (!locationExists) {
+				query = "INSERT INTO location (ZipCode, City, State) VALUES ("
+						+ customer.getZipCode() + ", '"
+						+ customer.getCity() + "', '"
+						+ customer.getState() + "');";
+				
+				rowsAffected = st.executeUpdate(query);
+				if (rowsAffected == 0) {
+					return "failure";
+				}
+			}
+			else {
+				query = "UPDATE location SET "
+						+ "City = '" + customer.getCity() + "', "
+						+ "State = '" + customer.getState()
+						+ "' WHERE ZipCode = " + customer.getZipCode() + ";";
+				
+				rowsAffected = st.executeUpdate(query);
+				if (rowsAffected == 0) {
+					return "failure";
+				}
+			}
+			
+			query = "SELECT COUNT(*) AS count FROM person P WHERE P.SSN = '"
+					+ customer.getCustomerID() + "';";
+			
+			rs = st.executeQuery(query);
+			rs.next();
+			
+			boolean personExists = rs.getInt("count") > 0;
+			if (!personExists) {
+				query = "INSERT INTO person "
+						+ "(SSN, LastName, FirstName, Address, ZipCode, Telephone)"
+						+ " VALUES ('" 
+						+ customer.getCustomerID() + "', '"
+						+ customer.getLastName() + "', '"
+						+ customer.getFirstName() + "', '"
+						+ customer.getAddress() + "', "
+						+ customer.getZipCode() + ", '"
+						+ customer.getTelephone() + "');";
+				
+				rowsAffected = st.executeUpdate(query);
+				if (rowsAffected == 0) {
+					return "failure";
+				}
+			}
+			else {
+				query = "UPDATE person SET "
+						+ "LastName = '" + customer.getLastName()
+						+ "', FirstName = '" + customer.getFirstName()
+						+ "', Address = '" + customer.getAddress()
+						+ "', ZipCode = " + customer.getZipCode()
+						+ ", Telephone = '" + customer.getTelephone()
+						+ "' WHERE SSN = '" + customer.getCustomerID() + "';";
+				
+				rowsAffected = st.executeUpdate(query);
+				if (rowsAffected == 0) {
+					return "failure";
+				}
+			}
+			
+			query = "UPDATE customer SET "
+					+ "Email = '" + customer.getEmail()
+					+ "', Rating = '" + customer.getRating()
+					+ "', CREDITCARDNUMBER = '" + customer.getCreditCard()
+					+ "' WHERE Id = '" + customer.getCustomerID() + "';";
+				
+			rowsAffected = st.executeUpdate(query);
+			if (rowsAffected == 0) {
+				return "failure";
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
+		
 		return "success";
-		/*Sample data ends*/
-
 	}
 
 }
