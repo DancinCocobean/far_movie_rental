@@ -7,7 +7,6 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.sql.ResultSet;
 
-import model.Customer;
 import model.Employee;
 
 public class EmployeeDao {
@@ -67,7 +66,7 @@ public class EmployeeDao {
 			if (!personExists) {
 				query = "INSERT INTO person "
 						+ "(SSN, LastName, FirstName, Address, ZipCode, Telephone)"
-						+ "VALUES ('" 
+						+ " VALUES ('" 
 						+ employee.getEmployeeID() + "', '"
 						+ employee.getLastName() + "', '"
 						+ employee.getFirstName() + "', '"
@@ -91,7 +90,7 @@ public class EmployeeDao {
 			if (!employeeExists) {
 				query = "INSERT INTO employee "
 						+ "(SSN, StartDate, HourlyRate, Email, Level)"
-						+ "VALUES ('" 
+						+ " VALUES ('" 
 						+ employee.getEmployeeID() + "', '"
 						+ employee.getStartDate() + "', "
 						+ employee.getHourlyRate() + ", '"

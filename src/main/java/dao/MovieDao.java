@@ -1,17 +1,18 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Order;
-import model.Employee;
 import model.Movie;
 
 public class MovieDao {
 
 	
 	public List<Movie> getMovies() {
-		
 		/*
 		 * The students code to fetch data from the database will be written here
 		 * Query to fetch details of all the movies has to be implemented
@@ -19,48 +20,79 @@ public class MovieDao {
 		 */
 
 		List<Movie> movies = new ArrayList<Movie>();
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT * FROM movie M;";
+			rs = st.executeQuery(query);
+			
+			while (rs.next()) {
+				Movie movie = new Movie();
 				
-		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Movie movie = new Movie();
-			movie.setMovieID(1);
-			movie.setMovieName("The Godfather");
-			movie.setMovieType("Drama");
-			movie.setDistFee(10000);
-			movie.setNumCopies(3);
-			movie.setRating(5);
-			movies.add(movie);
+				movie.setMovieID(rs.getInt("Id"));
+				movie.setMovieName(rs.getString("Name"));
+				movie.setMovieType(rs.getString("Type"));
+				movie.setDistFee(rs.getInt("DistrFee"));
+				movie.setNumCopies(rs.getInt("NumCopies"));
+				movie.setRating(rs.getInt("Rating"));
+				
+				movies.add(movie);
+			}
 		}
-		/*Sample data ends*/
+		catch (Exception e) {
+			System.out.println(e);
+		}
 		
 		return movies;
-
 	}
 	
 	public Movie getMovie(String movieID) {
-
 		/*
 		 * The students code to fetch data from the database based on "movieID" will be written here
 		 * movieID, which is the Movie's ID who's details have to be fetched, is given as method parameter
 		 * The record is required to be encapsulated as a "Movie" class object
 		 */
-
+		
 		Movie movie = new Movie();
-		
-		/*Sample data begins*/
-		movie.setMovieID(1);
-		movie.setMovieName("The Godfather");
-		movie.setMovieType("Drama");
-		movie.setDistFee(10000);
-		movie.setNumCopies(3);
-		movie.setRating(5);
-		/*Sample data ends*/
-		
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
+				
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT * FROM Movie M WHERE M.Id = " + movieID + ";";
+			
+			rs = st.executeQuery(query);
+			if (rs.next()) {
+				movie.setMovieID(rs.getInt("Id"));
+				movie.setMovieName(rs.getString("Name"));
+				movie.setMovieType(rs.getString("Type"));
+				movie.setDistFee(rs.getInt("DistrFee"));
+				movie.setNumCopies(rs.getInt("NumCopies"));
+				movie.setRating(rs.getInt("Rating"));
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
+						
 		return movie;
 	}
 	
 	public String addMovie(Movie movie) {
-
 		/*
 		 * All the values of the add movie form are encapsulated in the movie object.
 		 * These can be accessed by getter methods (see Employee class in model package).
@@ -69,10 +101,37 @@ public class MovieDao {
 		 * You need to handle the database insertion of the movie details and return "success" or "failure" based on result of the database insertion.
 		 */
 		
-		/*Sample data begins*/
+		Connection con = null;
+		Statement st = null;
+		int rowsAffected = 0;
+		String query = "";
+		String password = "root";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "INSERT INTO movie "
+					+ "(Name, Type, Rating, DistrFee, NumCopies)"
+					+ " VALUES ('" 
+					+ movie.getMovieName() + "', '"
+					+ movie.getMovieType() + "', "
+					+ movie.getRating() + ", "
+					+ movie.getDistFee() + ", "
+					+ movie.getNumCopies() + ");";
+			
+			rowsAffected = st.executeUpdate(query);
+			if (rowsAffected == 0) {
+				return "failure";
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+			return "failure";
+		}
+		
 		return "success";
-		/*Sample data ends*/
-
 	}
 	
 	public String editMovie(Movie movie) {
@@ -84,9 +143,36 @@ public class MovieDao {
 		 * You need to handle the database update and return "success" or "failure" based on result of the database update.
 		 */
 		
-		/*Sample data begins*/
+		Connection con = null;
+		Statement st = null;
+		int rowsAffected = 0;
+		String query = "";
+		String password = "root";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "UPDATE movie SET "
+					+ "Name = '" + movie.getMovieName()
+					+ "', Type = '" + movie.getMovieType()
+					+ "', Rating = " + movie.getRating()
+					+ ", DistrFee = " + movie.getDistFee()
+					+ ", NumCopies = " + movie.getNumCopies()
+					+ " WHERE Name = '" + movie.getMovieName() + "';";
+			
+			rowsAffected = st.executeUpdate(query);
+			if (rowsAffected == 0) {
+				return "failure";
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+			return "failure";
+		}
+		
 		return "success";
-		/*Sample data ends*/
 
 	}
 
@@ -97,10 +183,31 @@ public class MovieDao {
 		 * You need to handle the database deletion and return "success" or "failure" based on result of the database deletion.
 		 */
 		
-		/*Sample data begins*/
+		Connection con = null;
+		Statement st = null;
+		int rowsAffected = 0;
+		String query = "";
+		String password = "root";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "DELETE FROM movie WHERE Id = "
+						+ movieID + ";";
+			
+			rowsAffected = st.executeUpdate(query);
+			if (rowsAffected == 0) {
+				return "failure";
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+			return "failure";
+		}
+		
 		return "success";
-		/*Sample data ends*/
-
 	}
 	
 	
