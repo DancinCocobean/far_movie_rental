@@ -212,7 +212,6 @@ public class MovieDao {
 	
 	
 	public List<Movie> getBestsellerMovies() {
-		
 		/*
 		 * The students code to fetch data from the database will be written here
 		 * Query to fetch details of the bestseller movies has to be implemented
@@ -220,20 +219,41 @@ public class MovieDao {
 		 */
 
 		List<Movie> movies = new ArrayList<Movie>();
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
 		
-		
-		/*Sample data begins*/
-		for (int i = 0; i < 5; i++) {
-			Movie movie = new Movie();
-			movie.setMovieID(1);
-			movie.setMovieName("The Godfather");
-			movie.setMovieType("Drama");
-			movies.add(movie);
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT *, TotalOrders FROM ("
+					+ "SELECT MovieId, COUNT(*) AS TotalOrders FROM Rental"
+					+ " GROUP BY MovieId LIMIT 10) AS M JOIN movie"
+					+ " ON movie.Id = M.MovieId ORDER BY TotalOrders DESC;";
+			
+			rs = st.executeQuery(query);
+			while (rs.next()) {
+				Movie movie = new Movie();
+				
+				movie.setMovieID(rs.getInt("Id"));
+				movie.setMovieName(rs.getString("Name"));
+				movie.setMovieType(rs.getString("Type"));
+				movie.setDistFee(rs.getInt("DistrFee"));
+				movie.setNumCopies(rs.getInt("NumCopies"));
+				movie.setRating(rs.getInt("Rating"));
+				
+				movies.add(movie);
+			}
 		}
-		/*Sample data ends*/
+		catch (Exception e) {
+			System.out.println(e);
+		}
 		
 		return movies;
-
 	}
 
 	public List<Movie> getSummaryListing(String searchKeyword) {
@@ -263,9 +283,6 @@ public class MovieDao {
 		return movies;
 
 	}
-	
-	
-	
 
 	public List<Movie> getMovieSuggestions(String customerID) {
 		
