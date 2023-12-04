@@ -7,8 +7,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Movie;
 import model.Order;
+import model.Movie;
 
 public class MovieDao {
 
@@ -318,7 +318,7 @@ public class MovieDao {
 		 * customerID, which is the Customer's ID for whom currently hold movie are fetched, is given as method parameter
 		 * Each record is required to be encapsulated as a "Movie" class object and added to the "movies" ArrayList
 		 */
-
+// you can delete these comments if ur working on this method, or u can use it as reference
 //		System.out.println(customerID);
 		List<Movie> movies = new ArrayList<Movie>();
 //		Connection con = null;
@@ -379,12 +379,8 @@ public List<Movie> getQueueOfMovies(String customerID){
 		}
 		/*Sample data ends*/
 		
-		return movies;
-		
-		
-		
+		return movies;	
 	}
-	
 	
 
 //	public List getMoviesBySeller(String sellerID) {
@@ -486,48 +482,44 @@ public List<Movie> getQueueOfMovies(String customerID){
 		 * The movies and orders Lists are to be added to the "output" List and returned
 		 */
 
-//		System.out.println(movieName);
 		List<Movie> movies = new ArrayList<Movie>();
-//		List<Order> orders = new ArrayList<Order>();
-//		
-//		Connection con = null;
-//		Statement st = null;
-//		ResultSet rs = null;
-//		String query = "";
-//		String password = "root";
-//		
-//		try {
-//			Class.forName("com.mysql.cj.jdbc.Driver");
-//			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
-//			st = con.createStatement();
-//			
-//			query = "SELECT * FROM movie WHERE Name LIKE '%"
-//					+ movieName + "%';";
-//			
-//			rs = st.executeQuery(query);
-//			while (rs.next()) {
-//				Movie movie = new Movie();
-//				
-//				movie.setMovieID(rs.getInt("Id"));
-//				movie.setMovieName(rs.getString("Name"));
-//				movie.setMovieType(rs.getString("Type"));
-//				movie.setDistFee(rs.getInt("DistrFee"));
-//				movie.setNumCopies(rs.getInt("NumCopies"));
-//				movie.setRating(rs.getInt("Rating"));
-//				System.out.println(movie.getMovieName());
-//
-//				movies.add(movie);
-//			}
-//		}
-//		catch (Exception e) {
-//			System.out.println(e);
-//		}
+		
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT * FROM movie WHERE Name LIKE '%"
+					+ movieName + "%';";
+			
+			rs = st.executeQuery(query);
+			while (rs.next()) {
+				Movie movie = new Movie();
+				
+				movie.setMovieID(rs.getInt("Id"));
+				movie.setMovieName(rs.getString("Name"));
+				movie.setMovieType(rs.getString("Type"));
+				movie.setDistFee(rs.getInt("DistrFee"));
+				movie.setNumCopies(rs.getInt("NumCopies"));
+				movie.setRating(rs.getInt("Rating"));
+
+				movies.add(movie);
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
 		
 		return movies;
 	}
 	
 	public List getMoviesByActor(String actorName) {
-		
 		/*
 		 * The students code to fetch data from the database will be written here
 		 * The movieName, which is the movie's name on which the query has to be implemented, is given as method parameter
@@ -540,18 +532,35 @@ public List<Movie> getQueueOfMovies(String customerID){
 
 		List<Movie> movies = new ArrayList<Movie>();
 		
-		/*Sample data begins*/
-		for (int i = 0; i < 4; i++) {
-			Movie movie = new Movie();
-			movie.setMovieID(1);
-			movie.setMovieName("The Godfather");
-			movie.setMovieType("Drama");
-			movies.add(movie);
-			
-		}
-		/*Sample data ends*/
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
 		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT M.Id, M.Name, M.Type FROM movie M JOIN appearedin AI ON"
+					+ " M.Id = AI.MovieId JOIN actor A ON AI.ActorId = A.Id WHERE A.Name"
+					+ " LIKE '%" + actorName + "%';";
+			
+			rs = st.executeQuery(query);
+			while (rs.next()) {
+				Movie movie = new Movie();
+				
+				movie.setMovieID(rs.getInt("Id"));
+				movie.setMovieName(rs.getString("Name"));
+				movie.setMovieType(rs.getString("Type"));
 
+				movies.add(movie);
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
 		
 		return movies;
 	}
@@ -605,68 +614,110 @@ public List<Movie> getQueueOfMovies(String customerID){
 	}
 	
 	public List getMovieRentalsByName(String movieName) {
-		
-		
-
 		List<Movie> movies = new ArrayList<Movie>();
 		
-		/*Sample data begins*/
-		for (int i = 0; i < 4; i++) {
-			Movie movie = new Movie();
-			movie.setMovieID(1);
-			movie.setMovieName("The Godfather");
-			movie.setMovieType("Drama");
-			movies.add(movie);
-			
-		}
-		/*Sample data ends*/
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
 		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT DISTINCT M.Id, M.Name, M.Type FROM movie M JOIN rental R"
+					+ " ON M.Id = R.MovieId WHERE M.Name LIKE '%"
+					+ movieName + "%';";
+			
+			rs = st.executeQuery(query);
+			while (rs.next()) {
+				Movie movie = new Movie();
+				
+				movie.setMovieID(rs.getInt("Id"));
+				movie.setMovieName(rs.getString("Name"));
+				movie.setMovieType(rs.getString("Type"));
 
+				movies.add(movie);
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
 		
 		return movies;
 	}
 	
 	public List getMovieRentalsByCustomer(String customerName) {
-		
-		
-
 		List<Movie> movies = new ArrayList<Movie>();
 		
-		/*Sample data begins*/
-		for (int i = 0; i < 4; i++) {
-			Movie movie = new Movie();
-			movie.setMovieID(1);
-			movie.setMovieName("The Godfather");
-			movie.setMovieType("Drama");
-			movies.add(movie);
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
 			
-		}
-		/*Sample data ends*/
-		
+			query = "SELECT M.Id, M.Name, M.Type FROM customer C JOIN person P ON"
+					+ " C.Id = P.SSN JOIN account A ON C.Id = A.Customer"
+					+ " JOIN rental R ON A.Id = R.AccountId JOIN movie M"
+					+ " ON R.MovieId = M.Id WHERE P.FirstName LIKE '%"
+					+ customerName + "%' OR P.LastName LIKE '%" + customerName + "%';";
+			
+			rs = st.executeQuery(query);
+			while (rs.next()) {
+				Movie movie = new Movie();
+				
+				movie.setMovieID(rs.getInt("Id"));
+				movie.setMovieName(rs.getString("Name"));
+				movie.setMovieType(rs.getString("Type"));
 
-		
+				movies.add(movie);
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
+				
 		return movies;
 	}
 	
 
 	public List getMovieRentalsByType(String movieType) {
-		
-	
-
 		List<Movie> movies = new ArrayList<Movie>();
-				
-		/*Sample data begins*/
-		for (int i = 0; i < 4; i++) {
-			Movie movie = new Movie();
-			movie.setMovieID(1);
-			movie.setMovieName("The Godfather");
-			movie.setMovieType("Drama");
-			movies.add(movie);
-			
-		}
-		/*Sample data ends*/
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
 		
-
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT DISTINCT M.Id, M.Name, M.Type FROM movie M JOIN "
+					+ "rental R ON M.Id = R.MovieId WHERE M.Type LIKE '" + movieType + "';";
+			
+			rs = st.executeQuery(query);
+			while (rs.next()) {
+				Movie movie = new Movie();
+				
+				movie.setMovieID(rs.getInt("Id"));
+				movie.setMovieName(rs.getString("Name"));
+				movie.setMovieType(rs.getString("Type"));
+				
+				movies.add(movie);
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
 		
 		return movies;
 	}
