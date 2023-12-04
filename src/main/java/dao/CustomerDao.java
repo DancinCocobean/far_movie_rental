@@ -33,7 +33,7 @@ public class CustomerDao {
 		/*Sample data begins*/
 		for (int i = 0; i < 10; i++) {
 			Customer customer = new Customer();
-			customer.setCustomerID("111-11-1111");
+			customer.setCustomerID("444444444");
 			customer.setAddress("123 Success Street");
 			customer.setLastName("Lu");
 			customer.setFirstName("Shiyong");
@@ -112,7 +112,7 @@ public class CustomerDao {
 		
 		/*Sample data begins*/
 		Customer customer = new Customer();
-		customer.setCustomerID("111-11-1111");
+		customer.setCustomerID("444444444");
 		customer.setAddress("123 Success Street");
 		customer.setLastName("Lu");
 		customer.setFirstName("Shiyong");
@@ -151,7 +151,7 @@ public class CustomerDao {
 		 * The Customer's ID is required to be returned as a String
 		 */
 
-		return "111-11-1111";
+		return "444444444";
 	}
 
 

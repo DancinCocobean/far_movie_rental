@@ -1,13 +1,18 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import model.Order;
 import model.Rental;
-import model.Account;
-import model.Customer;
-import model.Movie;
+
 
 public class OrderDao {
 	
@@ -21,22 +26,35 @@ public class OrderDao {
 		 * Query to get data about all the orders should be implemented
 		 */
 		
-		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Order order = new Order();
-			order.setOrderID(1);
-			order.setDateTime("11-11-09 10:00");
-			order.setReturnDate("11-14-09");
-			orders.add(order);
+		Connection con= null;
+		Statement st =null;
+		ResultSet rs =null;
+		String password = "root";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st =con.createStatement();
+			
+			String query = "SELECT * FROM customerorder";
+			rs =st.executeQuery(query);
+			
+			while(rs.next()) {
+				Order order = new Order();
+				order.setOrderID(rs.getInt("Id"));
+				order.setDateTime(rs.getString("DateTime"));
+				order.setReturnDate(rs.getString("ReturnDate"));
+				orders.add(order);
+			}
+		}catch (Exception e) {
+			System.out.println(e);
 		}
-		/*Sample data ends*/
 		
 		return orders;
 
 	}
 
 	public List<Order> getOrders(String customerID) {
-		
 		List<Order> orders = new ArrayList<Order>();
 		
 		/*
@@ -46,21 +64,51 @@ public class OrderDao {
 		 * customerID is the customer's primary key, given as method parameter
 		 */
 		
-		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Order order = new Order();
-			order.setOrderID(1);
-			order.setDateTime("11-11-09 10:00");
-			order.setReturnDate("11-14-09");
-			orders.add(order);
+		
+		Connection con= null;
+		Statement st =null;
+		ResultSet rs =null;
+		String password = "root";
+
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st =con.createStatement();
+			
+			String findaccount="SELECT accountID from Account WHERE customerID= "+customerID;
+			rs =st.executeQuery(findaccount);
+			int accountID=rs.getInt("accountID");
+			
+			String query = "SELECT rental.orderID, \r\n"
+					+ "       rental.movieID, \r\n"
+					+ "       movie.name AS movie_name,\r\n"
+					+ "       customerorder.dateTime,\r\n"
+					+" 		rental.CustRepID\r\n"
+					+ "FROM rental\r\n"
+					+ "JOIN account ON rental.accountID = account.ID\r\n"
+					+ "JOIN movie ON rental.movieID = movie.ID\r\n"
+					+ "JOIN customerorder ON rental.orderID = customerorder.ID\r\n"
+					+ "WHERE account.Customer =" +customerID;
+			rs =st.executeQuery(query);
+			
+			while(rs.next()) {
+				Order order = new Order();
+				order.setOrderID(rs.getInt("OrderID"));
+				order.setDateTime(rs.getString("DateTime"));
+				order.setReturnDate(rs.getString("ReturnDate"));
+				orders.add(order);
+			}
+		}catch (Exception e) {
+			System.out.println(e);
 		}
-		/*Sample data ends*/
 		
 		return orders;
 
 	}
 
 	public List<Order> getOpenOrders(String employeeEmail) {
+		System.out.println(employeeEmail);
 		List<Order> orders = new ArrayList<Order>();
 		
 		/*
@@ -70,16 +118,37 @@ public class OrderDao {
 		 * employeeEmail is the email ID of the customer representative, which is given as method parameter
 		 */
 		
-		/*Sample data begins*/
-		for (int i = 0; i < 10; i++) {
-			Order order = new Order();
-			order.setOrderID(1);
-			order.setDateTime("11-11-09 10:00");
-			order.setReturnDate("11-14-09");
-			orders.add(order);
-		}
-		/*Sample data ends*/
 		
+		Connection con= null;
+		Statement st =null;
+		ResultSet rs =null;
+		String password = "root";
+
+		//not able to get order because the email is null
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st =con.createStatement();
+			
+			String query="SELECT rental.OrderID, customerorder.DateTime, customerorder.ReturnDate\r\n"
+					+ "FROM rental\r\n"
+					+ "JOIN customerorder ON rental.OrderID = customerorder.Id\r\n"
+					+ "JOIN employee ON rental.CustRepId = employee.SSN\r\n"
+					+ "WHERE employee.email = "+ employeeEmail +"\r\n"
+					+ "AND customerorder.ReturnDate IS NULL;";
+			rs =st.executeQuery(query);
+			
+			while(rs.next()) {
+				Order order = new Order();
+				order.setOrderID(rs.getInt("OrderID"));
+				order.setDateTime(rs.getString("DateTime"));
+				order.setReturnDate(null);
+				orders.add(order);
+			}
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+						
 		return orders;
 
 		
@@ -93,28 +162,87 @@ public class OrderDao {
 		 * orderID is the Order's ID, given as method parameter
 		 * The method should return a "success" string if the update is successful, else return "failure"
 		 */
-		/* Sample data begins */
-		return "success";
-		/* Sample data ends */
+		
+		Connection con= null;
+		//Statement st =null;
+		int rs =0;
+		String password = "root";
+
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			//st =con.createStatement();
+			
+			//use executeupdate for modifying data
+			String query = "INSERT INTO CustomerOrder (Id, DateTime, ReturnDate) VALUES (?, ?, ?)";
+			
+			LocalDate currentDate = LocalDate.now();
+			String startDate = currentDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			String returndate= null;
+			int ID=Integer.parseInt(orderID);
+			
+			PreparedStatement prepare= con.prepareStatement(query);
+			prepare.setInt(1,ID);
+			prepare.setString(2, startDate);
+			prepare.setString(3, returndate);
+			
+			
+			rs =prepare.executeUpdate();
+			
+			if(rs>0) {
+				return "success";
+			}else {
+				return "failure";
+			}
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+
+		return "failure";
 	}
 	
 	public List<Rental> getOrderHisroty(String customerID) {
 		
-		List<Rental> rentals = new ArrayList<Rental>();
-			
-		/*Sample data begins*/
-		for (int i = 0; i < 4; i++) {
-			Rental rental = new Rental();
-			
-			rental.setOrderID(1);
-			rental.setMovieID(1);
-			rental.setCustomerRepID(1);
 		
-			rentals.add(rental);
+		List<Rental> rentals = new ArrayList<Rental>();
+		
+		Connection con= null;
+		Statement st =null;
+		ResultSet rs =null;
+		String password = "root";
+
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st =con.createStatement();
+
+			String query = "SELECT rental.orderID, \r\n"
+					+ "       rental.movieID, \r\n"
+					+ "       movie.name AS movie_name,\r\n"
+					+ "       customerorder.dateTime,\r\n"
+					+" 		rental.CustRepID\r\n"
+					+ "FROM rental\r\n"
+					+ "JOIN account ON rental.accountID = account.ID\r\n"
+					+ "JOIN movie ON rental.movieID = movie.ID\r\n"
+					+ "JOIN customerorder ON rental.orderID = customerorder.ID\r\n"
+					+ "WHERE account.Customer =" +customerID;
+			rs =st.executeQuery(query);
 			
+			//ok i just realize i don't even need to get all those info
+			while(rs.next()) {
+				Rental rental = new Rental();
+				
+				rental.setOrderID(rs.getInt("OrderID"));
+				rental.setMovieID(rs.getInt("MovieID"));
+				rental.setCustomerRepID(rs.getInt("CustRepID"));
 			
+				rentals.add(rental);
+			}
+		}catch (Exception e) {
+			System.out.println(e);
 		}
-		/*Sample data ends*/
 						
 		return rentals;
 		
