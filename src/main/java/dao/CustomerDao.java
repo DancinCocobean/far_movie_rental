@@ -35,7 +35,7 @@ public class CustomerDao {
 		 * Each record is required to be encapsulated as a "Customer" class object and added to the "customers" List
 		 */
 		
-		/*Sample data begins*/
+
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
@@ -171,6 +171,7 @@ public class CustomerDao {
 		 */
 		
 		Customer customer = new Customer();
+
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
@@ -271,7 +272,7 @@ public class CustomerDao {
             if (rs.next()) {
                 return rs.getString("customerID");
             }
-
+		}
             catch (Exception e) {
     			System.out.println(e);
     			return "failure";
