@@ -1,5 +1,10 @@
 package dao;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 import model.Login;
 
 public class LoginDao {
@@ -18,15 +23,37 @@ public class LoginDao {
 		 * Query to verify the username and password and fetch the role of the user, must be implemented
 		 */
 		
-		/*Sample data begins*/
-		Login login = new Login();
-		//login.setRole("customerRepresentative");
-		login.setRole("manager");
-		//login.setRole("customer");
-		return login;
-		/*Sample data ends*/
-		
+		//Connection con = null;
+		//Statement st = null;
+		//String query = "";
+		//ResultSet rs = null;
+
+		//try {
+			//Class.forName("com.mysql.cj.jdbc.Driver");
+			//con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", "root");
+			//st = con.createStatement();
+			//query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
+			//rs = st.executeQuery(query);
+			//if (rs.next()) {
+                // User (from query) found, create a Login object
+				Login login = new Login();
+                //String role = rs.getString("role");
+                // Check if the role is "customerRepresentative"
+                //if ("customerRepresentative".equalsIgnoreCase(role)) {
+                    login.setRole("customerRepresentative");
+                    return login;
+                //}
+                //Other role checks here maybe ¯\_(ツ)_/¯ 
+             // If the role is not a customer representative, return null
+               // return null;
+			//}
+		//}
+		//	catch (Exception e) {
+		//		System.out.println(e);
+		//	}
+	     //   return null;
 	}
+		
 	
 	public String addUser(Login login) {
 		/*

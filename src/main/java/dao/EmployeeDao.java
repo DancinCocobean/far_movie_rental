@@ -376,7 +376,7 @@ public class EmployeeDao {
 		 * The Employee ID is required to be returned as a String
 		 */
 
-		return "111-11-1111";
+		return "123456789";
 	}
 
 }
