@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Order;
+import model.Rental;
 import model.Movie;
 
 public class MovieDao {
@@ -295,18 +296,48 @@ public class MovieDao {
 		 */
 
 		List<Movie> movies = new ArrayList<Movie>();
+
 		
-		/*Sample data begins*/
-		for (int i = 0; i < 4; i++) {
-			Movie movie = new Movie();
-			movie.setMovieID(1);
-			movie.setMovieName("The Godfather");
-			movie.setMovieType("Drama");
-			movies.add(movie);
+		Connection con= null;
+		Statement st =null;
+		ResultSet rs =null;
+		String password = "root";
+		
+		//need to implement login to get customer id
+		customerID="444444444";
+
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st =con.createStatement();
+
+			String query = "		SELECT *\r\n"
+					+ "		FROM movie\r\n"
+					+ "		WHERE Type = (\r\n"
+					+ "		    SELECT DISTINCT movie.Type\r\n"
+					+ "		    FROM movieq\r\n"
+					+ "		    JOIN movie\r\n"
+					+ "		    ON movieq.MovieId=movie.Id\r\n"
+					+ "		    JOIN account\r\n"
+					+ "		    ON account.Id=movieq.AccountId\r\n"
+					+ "		    WHERE account.Customer = " +customerID
+					+");";
+			rs =st.executeQuery(query);
+			
+		
+			while(rs.next()) {
+				Movie movie = new Movie();
+				movie.setMovieID(rs.getInt("Id"));
+				movie.setMovieName(rs.getString("Name"));
+				movie.setMovieType(rs.getString("Type"));
+				movies.add(movie);
+			}
+		}catch (Exception e) {
+			System.out.println(e);
 		}
-		/*Sample data ends*/
-		
-		return movies;
+						
+		return  movies;	
 
 	}
 	
@@ -318,43 +349,47 @@ public class MovieDao {
 		 * customerID, which is the Customer's ID for whom currently hold movie are fetched, is given as method parameter
 		 * Each record is required to be encapsulated as a "Movie" class object and added to the "movies" ArrayList
 		 */
-// you can delete these comments if ur working on this method, or u can use it as reference
-//		System.out.println(customerID);
+
+		//System.out.println(customerID);
 		List<Movie> movies = new ArrayList<Movie>();
-//		Connection con = null;
-//		Statement st = null;
-//		ResultSet rs = null;
-//		String query = "";
-//		String password = "root";
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
 		
-//		try {
-//			Class.forName("com.mysql.cj.jdbc.Driver");
-//			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
-//			st = con.createStatement();
-//			
-//			query = "SELECT Id, Name FROM customerorder JOIN rental"
-//					+ " ON customerorder.Id = rental.OrderId JOIN movie"
-//					+ " ON rental.MovieId = movie.Id "
-//					+ " WHERE AccountId = "
-//					+ " AND ReturnDate IS NULL;";
-//			
-//			rs = st.executeQuery(query);
-//			while (rs.next()) {
-//				Movie movie = new Movie();
-//				
-//				movie.setMovieID(rs.getInt("Id"));
-//				movie.setMovieName(rs.getString("Name"));
-//				movie.setMovieType(rs.getString("Type"));
-//				movie.setDistFee(rs.getInt("DistrFee"));
-//				movie.setNumCopies(rs.getInt("NumCopies"));
-//				movie.setRating(rs.getInt("Rating"));
-//				
-//				movies.add(movie);
-//			}
-//		}
-//		catch (Exception e) {
-//			System.out.println(e);
-//		}
+		//need to implement login to get customer id
+		customerID="444444444";
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "SELECT movie.Id, movie.Name,movie.Type \r\n"
+					+ "FROM customerorder JOIN rental\r\n"
+					+ "ON customerorder.Id = rental.OrderId\r\n"
+					+ "JOIN movie\r\n"
+					+ "ON rental.MovieId = movie.Id\r\n"
+					+ "JOIN account\r\n"
+					+ "ON account.Id=rental.AccountId\r\n"
+					+ "WHERE account.Customer = "+ customerID +"\r\n"
+					+ "AND ReturnDate IS NULL;";
+			
+			rs = st.executeQuery(query);
+			while (rs.next()) {
+				Movie movie = new Movie();
+				
+				movie.setMovieID(rs.getInt("Id"));
+				movie.setMovieName(rs.getString("Name"));
+				movie.setMovieType(rs.getString("Type"));
+				
+				movies.add(movie);
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
 		
 		return movies;
 	}
@@ -369,17 +404,43 @@ public List<Movie> getQueueOfMovies(String customerID){
 		 */
 
 		List<Movie> movies = new ArrayList<Movie>();
-		/*Sample data begins*/
-		for (int i = 0; i < 4; i++) {
-			Movie movie = new Movie();
-			movie.setMovieID(1);
-			movie.setMovieName("The Godfather");
-			movie.setMovieType("Drama");
-			movies.add(movie);
-		}
-		/*Sample data ends*/
 		
-		return movies;	
+		
+		Connection con= null;
+		Statement st =null;
+		ResultSet rs =null;
+		String password = "root";
+		
+		//need to implement login to get customer id
+		customerID="444444444";
+
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st =con.createStatement();
+
+			String query = "SELECT movie.Id,movie.Type,movie.Name FROM movieq\r\n"
+					+ "JOIN movie\r\n"
+					+ "ON movieq.MovieId=movie.Id\r\n"
+					+ "JOIN account\r\n"
+					+ "ON account.Id=movieq.AccountId\r\n"
+					+ "WHERE account.Customer=" +customerID;
+			rs =st.executeQuery(query);
+			
+		
+			while(rs.next()) {
+				Movie movie = new Movie();
+				movie.setMovieID(rs.getInt("Id"));
+				movie.setMovieName(rs.getString("Name"));
+				movie.setMovieType(rs.getString("Type"));
+				movies.add(movie);
+			}
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+						
+		return  movies;	
 	}
 	
 

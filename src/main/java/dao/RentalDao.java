@@ -13,7 +13,7 @@ public class RentalDao {
 	
 	public List<Rental> getOrderHisroty(String customerID) {
 		
-	System.out.println(customerID);
+		System.out.println(customerID);
 		
 		List<Rental> rentals = new ArrayList<Rental>();
 		
@@ -21,6 +21,8 @@ public class RentalDao {
 		Statement st =null;
 		ResultSet rs =null;
 		String password = "root";
+		//need to implement login to get customer id
+		customerID="444444444";
 
 		
 		try {

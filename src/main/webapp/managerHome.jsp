@@ -62,7 +62,7 @@
 					    <h5 class="card-title">Manage Movie</h5>
     					<div class="container">
 							<form action="addMovie.jsp">
-								<input type="submit" value="Add Employee" class="btn btn-primary"/>
+								<input type="submit" value="Add Movie" class="btn btn-primary"/>
 							</form>
 							<form action="getEditMovies" class="pt-1">
 								<input type="submit" value="View / Edit / Delete Movie" class="btn btn-primary"/>
