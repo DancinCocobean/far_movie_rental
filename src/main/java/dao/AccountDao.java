@@ -63,10 +63,35 @@ public class AccountDao {
 	
 	public String setAccount(String customerID, String accountType) {
 
+		Connection con = null;
+		Statement st = null;
+		int rowsAffected = 0;
+		String query = "";
+		String password = "root";
+		//System.out.println(customerID);
+		//need to implement login to get customer id
+		customerID="444444444";
 		
-		/*Sample data begins*/
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+			st = con.createStatement();
+			
+			query = "UPDATE account\r\n"
+					+ "SET Type ='" + accountType+ "' \r\n"
+					+ "WHERE customer = "+ customerID +";";
+			
+			rowsAffected = st.executeUpdate(query);
+			if (rowsAffected == 0) {
+				return "failure";
+			}
+		}
+		catch (Exception e) {
+			System.out.println(e);
+			return "failure";
+		}
+		
 		return "success";
-		/*Sample data ends*/
 
 	}
 	

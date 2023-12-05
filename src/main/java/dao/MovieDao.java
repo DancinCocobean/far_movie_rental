@@ -303,8 +303,9 @@ public class MovieDao {
 		ResultSet rs =null;
 		String password = "root";
 		
+		System.out.println(customerID);
 		//need to implement login to get customer id
-		customerID="444444444";
+		//customerID="444444444";
 
 		
 		try {
