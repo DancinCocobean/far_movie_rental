@@ -41,6 +41,8 @@ public class LoginDao {
                 // Check if the role is "customerRepresentative"
                 //if ("customerRepresentative".equalsIgnoreCase(role)) {
                     login.setRole("customerRepresentative");
+                    //login.setRole("manager");
+                   //login.setRole("customer");
                     return login;
                 //}
                 //Other role checks here maybe ¯\_(ツ)_/¯ 
@@ -52,6 +54,7 @@ public class LoginDao {
 		//		System.out.println(e);
 		//	}
 	     //   return null;
+
 	}
 		
 	

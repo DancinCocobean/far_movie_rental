@@ -125,6 +125,7 @@ public class OrderDao {
 		String password = "root";
 
 		//not able to get order because the email is null
+		employeeEmail="dsmith@gmail.com";
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
@@ -134,7 +135,7 @@ public class OrderDao {
 					+ "FROM rental\r\n"
 					+ "JOIN customerorder ON rental.OrderID = customerorder.Id\r\n"
 					+ "JOIN employee ON rental.CustRepId = employee.SSN\r\n"
-					+ "WHERE employee.email = "+ employeeEmail +"\r\n"
+					+ "WHERE employee.email = '"+ employeeEmail +"'\r\n"
 					+ "AND customerorder.ReturnDate IS NULL;";
 			rs =st.executeQuery(query);
 			
