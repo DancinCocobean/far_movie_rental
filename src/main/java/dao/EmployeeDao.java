@@ -66,7 +66,7 @@ public class EmployeeDao {
 			if (!personExists) {
 				query = "INSERT INTO person "
 						+ "(SSN, LastName, FirstName, Address, ZipCode, Telephone)"
-						+ " VALUES ('" 
+						+ " VALUES ('"
 						+ employee.getEmployeeID() + "', '"
 						+ employee.getLastName() + "', '"
 						+ employee.getFirstName() + "', '"
@@ -89,13 +89,13 @@ public class EmployeeDao {
 			boolean employeeExists = rs.getInt("count") > 0;
 			if (!employeeExists) {
 				query = "INSERT INTO employee "
-						+ "(SSN, StartDate, HourlyRate, Email, Level)"
-						+ " VALUES ('" 
+						+ "(SSN, StartDate, HourlyRate, Email, Revenue)"
+						+ " VALUES ('"
 						+ employee.getEmployeeID() + "', '"
 						+ employee.getStartDate() + "', "
 						+ employee.getHourlyRate() + ", '"
 						+ employee.getEmail() + "', "
-						+ "'CR');";
+						+ 0 + ");";
 				
 				rowsAffected = st.executeUpdate(query);
 				if (rowsAffected == 0) {
@@ -113,6 +113,7 @@ public class EmployeeDao {
 		
 		return "success";
 	}
+
 
 	public String editEmployee(Employee employee) {
 		/*

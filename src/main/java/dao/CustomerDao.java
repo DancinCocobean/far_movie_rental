@@ -261,8 +261,6 @@ public class CustomerDao {
 	ResultSet rs = null;
 	String query = "";
 	String password = "root";
-	int test = 0;
-	test++;
 
 	try {
 	    Class.forName("com.mysql.cj.jdbc.Driver");
@@ -273,12 +271,13 @@ public class CustomerDao {
 
 	    rs = st.executeQuery(query);
 	    if (rs.next()) {
-	        return rs.getString("Id");}}
-	catch (Exception e) {
-	    System.out.println(e);
-	    return "failure";}
-
-	        return "success";
+	        return rs.getString("Id");}
+	    }
+		catch (Exception e) {
+		    System.out.println(e);
+		    return "failure";
+	}
+	return "failure";
 	    }
 
 	public List<Customer> getSellers() {

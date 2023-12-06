@@ -1,12 +1,9 @@
 package dao;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
 import model.Login;
-
 public class LoginDao {
 	/*
 	 * This class handles all the database operations related to login functionality
@@ -26,49 +23,36 @@ public class LoginDao {
 		Connection con = null;
 	    Statement st = null;
 	    ResultSet rs = null;
-
+	    String query = "";
 	    try {
 	        Class.forName("com.mysql.cj.jdbc.Driver");
 	        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", "root");
 	        st = con.createStatement();
-
 	        // Check in the employee table
-	        String queryEmployee = "SELECT * FROM employee WHERE Email = '" + username + "' AND Password = '" + password + "'";
-	        rs = st.executeQuery(queryEmployee);
-
+	        query = "SELECT * FROM login WHERE Email = '" + username + "' AND Password = '" + password + "';";
+	        rs = st.executeQuery(query);
 	        // Check in the customer table if not found in the employee table
-	        if (!rs.next()) {
-	            String queryCustomer = "SELECT * FROM customer WHERE Email = '" + username + "' AND Password = '" + password + "'";
-	            rs = st.executeQuery(queryCustomer);
-
-	            // If found in the customer table, set role as "customer"
-	            if (rs.next()) {
-	                Login login = new Login();
-	                login.setRole("customer");
-	                return login;
-	            }
-	        } else {
-	            // If found in the employee table, determine the role based on the "level" field
+	        if (rs.next()) {
 	            Login login = new Login();
-	            String role = rs.getString("level");
-
-	            if ("M".equalsIgnoreCase(role)) {
+	            login.setUsername(rs.getString("Email"));
+	            login.setPassword(rs.getString("Password"));
+	            login.setRole(rs.getString("Level"));
+	            if ("M".equalsIgnoreCase(rs.getString("Level"))) {
 	                login.setRole("manager");
-	            } else if ("CR".equalsIgnoreCase(role)) {
+	            } else if ("CR".equalsIgnoreCase(rs.getString("Level"))) {
 	                login.setRole("customerRepresentative");
 	            } else {
-	            }	         
-	            
-	            return login;
-	        
-              //If the role is not a customer representative, return null
-			}
+	            	login.setRole("customer");
+	            }
+		           
+		        return login;
+	        }
 		}
-			catch (Exception e) {
-				System.out.println(e);
-			}
-	        return null;
-
+		catch (Exception e) {
+			System.out.println(e);
+		}
+	       
+		return null;
 	}
 		
 	
@@ -82,9 +66,38 @@ public class LoginDao {
 		 * Return "failure" for an unsuccessful database operation
 		 */
 		
-		/*Sample data begins*/
-		return "success";
-		/*Sample data ends*/
+		Connection con = null;
+		Statement st = null;
+		int rowsAffected = 0;
+		String query = "";
+		String password = "root";
+		
+		if ("Manager".equalsIgnoreCase(login.getRole())) {
+			login.setRole("M");
+		} else if ("CustomerRepresentative".equalsIgnoreCase(login.getRole())) {
+			login.setRole("CR");
+		} else {
+			login.setRole("C");
+		}
+		try {
+		    Class.forName("com.mysql.cj.jdbc.Driver");
+		    con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+		    st = con.createStatement();
+		    query = "INSERT INTO login (Email, Password, Level) VALUES ('"
+		    		+ login.getUsername() + "', '"
+		    		+ login.getPassword() + "', '"
+		    		+ login.getRole() + "');";
+		    rowsAffected = st.executeUpdate(query);
+		    if (rowsAffected > 0) {
+		        return "success";
+		    }
+		}
+		catch (Exception e) {
+		    System.out.println(e);
+		    return "failure";
+		}
+		
+		return "failure";
 	}
-
 }
+
