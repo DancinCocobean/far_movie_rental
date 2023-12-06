@@ -375,8 +375,28 @@ public class EmployeeDao {
 		 * username, which is the Employee's email address who's Employee ID has to be fetched, is given as method parameter
 		 * The Employee ID is required to be returned as a String
 		 */
+		
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String query = "";
+		String password = "root";
 
-		return "123456789";
-	}
+		try {
+		    Class.forName("com.mysql.cj.jdbc.Driver");
+		    con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+		    st = con.createStatement();
 
+		    query = "SELECT * FROM employee WHERE Email = '" + username + "'";
+
+		    rs = st.executeQuery(query);
+		    if (rs.next()) {
+		        return rs.getString("SSN");}
+		    }
+		catch (Exception e) {
+		    System.out.println(e);
+		    return "failure";
+		    }
+		        return "success";
+		    }
 }

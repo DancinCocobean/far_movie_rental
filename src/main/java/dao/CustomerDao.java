@@ -247,40 +247,39 @@ public class CustomerDao {
 	}
 
 
-	public String getCustomerID(String username) {
-		/*
-		 * This method returns the Customer's ID based on the provided email address
-		 * The students code to fetch data from the database will be written here
-		 * username, which is the email address of the customer, who's ID has to be returned, is given as method parameter
-		 * The Customer's ID is required to be returned as a String
-		 */
-		Connection con = null;
-		Statement st = null;
-		ResultSet rs = null;
-		int rowsAffected = 0;
-		String query = "";
-		String password = "root";
-		
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
-			st = con.createStatement();
-			
-			query = "SELECT Id FROM customer WHERE Email = '" + username + "'";
-			
-			rs = st.executeQuery(query);
-            if (rs.next()) {
-                return rs.getString("customerID");
-            }
-		}
-            catch (Exception e) {
-    			System.out.println(e);
-    			return "failure";
-    		}
+	 public String getCustomerID(String username) {
+	        /*
+	         
+	This method returns the Customer's ID based on the provided email address
+	The students code to fetch data from the database will be written here
+	username, which is the email address of the customer, who's ID has to be returned, is given as method parameter
+	The Customer's ID is required to be returned as a String
+	 */
 
-        return "success";
-    }
+	Connection con = null;
+	Statement st = null;
+	ResultSet rs = null;
+	String query = "";
+	String password = "root";
+	int test = 0;
+	test++;
 
+	try {
+	    Class.forName("com.mysql.cj.jdbc.Driver");
+	    con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+	    st = con.createStatement();
+
+	    query = "SELECT * FROM customer WHERE Email = '" + username + "'";
+
+	    rs = st.executeQuery(query);
+	    if (rs.next()) {
+	        return rs.getString("Id");}}
+	catch (Exception e) {
+	    System.out.println(e);
+	    return "failure";}
+
+	        return "success";
+	    }
 
 	public List<Customer> getSellers() {
 		

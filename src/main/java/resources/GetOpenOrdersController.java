@@ -32,7 +32,7 @@ public class GetOpenOrdersController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String employeeEmail = (String)request.getSession(false).getAttribute("employeeEmail");
+		String employeeEmail = (String)request.getSession(false).getAttribute("email");
 		OrderDao orderDao = new OrderDao();
 		List<Order> orders = new ArrayList<Order>();
 		orders = orderDao.getOpenOrders(employeeEmail);
