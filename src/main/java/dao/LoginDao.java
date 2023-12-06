@@ -23,37 +23,51 @@ public class LoginDao {
 		 * Query to verify the username and password and fetch the role of the user, must be implemented
 		 */
 		
-		//Connection con = null;
-		//Statement st = null;
-		//String query = "";
-		//ResultSet rs = null;
+		Connection con = null;
+	    Statement st = null;
+	    ResultSet rs = null;
 
-		//try {
-			//Class.forName("com.mysql.cj.jdbc.Driver");
-			//con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", "root");
-			//st = con.createStatement();
-			//query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
-			//rs = st.executeQuery(query);
-			//if (rs.next()) {
-                // User (from query) found, create a Login object
-				Login login = new Login();
-                //String role = rs.getString("role");
-                // Check if the role is "customerRepresentative"
-                //if ("customerRepresentative".equalsIgnoreCase(role)) {
-                    login.setRole("customerRepresentative");
-                    //login.setRole("manager");
-                   //login.setRole("customer");
-                    return login;
-                //}
-                //Other role checks here maybe ¯\_(ツ)_/¯ 
-             // If the role is not a customer representative, return null
-               // return null;
-			//}
-		//}
-		//	catch (Exception e) {
-		//		System.out.println(e);
-		//	}
-	     //   return null;
+	    try {
+	        Class.forName("com.mysql.cj.jdbc.Driver");
+	        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", "root");
+	        st = con.createStatement();
+
+	        // Check in the employee table
+	        String queryEmployee = "SELECT * FROM employee WHERE Email = '" + username + "' AND Password = '" + password + "'";
+	        rs = st.executeQuery(queryEmployee);
+
+	        // Check in the customer table if not found in the employee table
+	        if (!rs.next()) {
+	            String queryCustomer = "SELECT * FROM customer WHERE Email = '" + username + "' AND Password = '" + password + "'";
+	            rs = st.executeQuery(queryCustomer);
+
+	            // If found in the customer table, set role as "customer"
+	            if (rs.next()) {
+	                Login login = new Login();
+	                login.setRole("customer");
+	                return login;
+	            }
+	        } else {
+	            // If found in the employee table, determine the role based on the "level" field
+	            Login login = new Login();
+	            String role = rs.getString("level");
+
+	            if ("M".equalsIgnoreCase(role)) {
+	                login.setRole("manager");
+	            } else if ("CR".equalsIgnoreCase(role)) {
+	                login.setRole("customerRepresentative");
+	            } else {
+	            }	         
+	            
+	            return login;
+	        
+              //If the role is not a customer representative, return null
+			}
+		}
+			catch (Exception e) {
+				System.out.println(e);
+			}
+	        return null;
 
 	}
 		
