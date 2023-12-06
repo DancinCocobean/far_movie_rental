@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Customer;
 import model.Rental;
 
 public class RentalDao {
@@ -60,4 +61,63 @@ public class RentalDao {
 		
 	}
 
+
+
+public String addrental(String accountID, String cusrep, String orderID, String movieID ) {
+    // Replace this query with the actual query to insert a new customer into the database
+	Connection con = null;
+	Statement st = null;
+	ResultSet rs = null;
+	int rowsAffected = 0;
+	String query = "";
+	String password = "root";
+	
+	try {
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		con = DriverManager.getConnection("jdbc:mysql://localhost:3306/cse305?useSSL=false", "root", password);
+		st = con.createStatement();
+		
+		//check if customer exist
+		query = "SELECT * FROM account\r\n"
+				+ "WHERE Id= ' "+ accountID+ "';";
+		
+		rs = st.executeQuery(query);
+		rs.next();
+		
+		if (rs.next()&&rs.getString("Id")==null) {
+			System.out.println("invalid account id");
+		}
+		
+		//check if movie exist
+		query =  "SELECT * FROM movie\r\n"
+				+ "WHERE Id= ' "+ movieID+ "';";
+		
+		rs = st.executeQuery(query);
+		rs.next();
+		
+		if (rs.next()&&rs.getString("Id")==null) {
+			System.out.println("invalid movie id");
+		}
+		
+			query = "INSERT INTO rental "
+					+ "(AccountId, CustrepId, OrderId, MovieId)"
+					+ " VALUES ('" 
+					+ accountID + "', '"
+					+ cusrep + "', "
+					+ orderID + ", '"
+					+ movieID + "');";
+			
+			rowsAffected = st.executeUpdate(query);
+			if (rowsAffected == 0) {
+				return "failure";
+			}
+		
+	}
+	catch (Exception e) {
+		System.out.println(e);
+		return "failure";
+	}
+	
+	return "success";
+}
 }

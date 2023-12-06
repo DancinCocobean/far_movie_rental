@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import dao.CustomerDao;
 import dao.OrderDao;
+import dao.RentalDao;
+import model.Rental;
 
 /**
  * Servlet implementation class RecordSaleController
@@ -38,9 +40,17 @@ public class RecordSaleController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String orderID = request.getParameter("orderID");
+		String accountID = request.getParameter("accountID");
+		String movieID = request.getParameter("movieId");
+		String cusrepID = (String)request.getSession(false).getAttribute("employeeID");
+
 		
 		OrderDao orderDao = new OrderDao();
 		String result = orderDao.recordSale(orderID);
+		
+		RentalDao rentalDao = new RentalDao();
+		rentalDao.addrental(accountID, cusrepID, orderID, movieID);
+
 		
 		
 		if(result.equals("success")) {

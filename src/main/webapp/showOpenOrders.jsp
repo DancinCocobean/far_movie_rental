@@ -25,6 +25,7 @@
 <body>
 
 	<h1>The Open Orders are:</h1>
+	<h5>(orders with no return date)</h5>
 	<div class="container">
 	<c:if test="${empty orders}">
 		<h3> Order Data not found! </h3> 
@@ -38,7 +39,9 @@
 		      <th>Return Date</th>
 <!-- 		      <th>Closing Bid</th>
 		      <th>Current High Bid</th> -->
-		      <th></th>
+		      <th>
+		      
+		      </th>
 		    </tr>
 		  </thead>
 		  <tbody>
@@ -48,21 +51,26 @@
 		         <td>${cd.dateTime}</td>		         
 		         <td>${cd.returnDate}</td>
 <%-- 		         <td>${cd.closingBid}</td>
-		         <td>${cd.currentHighBid}</td> --%>
-		         <td>
-		         	<form method="POST" action="recordSale">
-						<div class="form-group">
-			            	<input type="hidden" class="form-control" name="orderID" value=${cd.orderID}>
-			        	</div>
-						<input type="submit" value="Record the Order" class="btn btn-success"/>
-					</form>
-		         </td>		         
+		         <td>${cd.currentHighBid}</td> --%>	         
 		         
 		       </tr>
 		     </c:forEach>
 		  </tbody>
 		</table>
 	</c:if>
+	</div>
+	
+	<div class ="container">
+			         
+		<form method="POST" action="recordSale">
+			<div class="form-group">
+			     <input type="text" class="form-control" name="orderID" value="orderID">
+			     <input type="text" class="form-control" name="accountID" value="accountID">
+			     <input type="text" class="form-control" name="movieId" value="movieID">
+			</div>
+			<input type="submit" value="Record the Order" class="btn btn-success"/>
+		</form>
+					
 	</div>
 
 	<div class="container pt-1">
